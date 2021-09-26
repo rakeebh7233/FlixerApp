@@ -22,7 +22,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.dataSource = self
         tableView.delegate = self
         // Do any additional setup after loading the view.
-        print("Hello")
         
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -41,7 +40,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 self.movies = dataDictionary["results"] as! [[String:Any]]
                 
                 self.tableView.reloadData()
-                print(dataDictionary)
              }
         }
         task.resume()
@@ -70,11 +68,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.posterView.af_setImage(withURL: posterUrl!)
         
         return cell
-        
-        
     }
     
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Loading up the details")
+        
+        //Find the selected Movie
+        let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPath(for: cell)!
+        let movie = movies[indexPath.row]
+        
+        //Pass the selected movie to the detail view controller
+        
+        let detailsViewController = segue.destination as! MovieDetailsViewController
+        detailsViewController.movie = movie
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 
 }
 
